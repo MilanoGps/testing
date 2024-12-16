@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+        DOCKER_USERNAME = credentials('dockerhub-username')
+        DOCKER_PASSWORD = credentials('dockerhub-password')
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -14,23 +18,35 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t seeU_website .'
+                sh '''
+                if [ ! -f Dockerfile ]; then
+                    echo "Dockerfile not found!"
+                    exit 1
+                fi
+                docker build -t $DOCKER_USERNAME/seeu_website .
+                '''
             }
         }
         stage('Push Image to Docker Hub') {
             steps {
-                sh 'docker push seeU_website'
+                sh '''
+                echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+                docker push $DOCKER_USERNAME/seeu_website
+                '''
             }
         }
         stage('Copy Files to Kubernetes') {
             steps {
-                sh 'scp file1.txt user@kubernetes-server:./'
+                sshagent(['kubernetes-ssh-key']) {
+                    sh 'scp file1.txt user@kubernetes-server:./'
+                }
             }
         }
         stage('Deploy to Kubernetes') {
             steps {
-                ansiblePlaybook playbook: 'deploy.yml'
+                ansiblePlaybook credentialsId: 'seeU_website', playbook: 'ansible-project/deploy.yml'
             }
         }
     }
 }
+
