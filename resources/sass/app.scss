@@ -1,0 +1,42 @@
+// Fonts
+// @import url("https://fonts.bunny.net/css?family=Nunito");
+
+// Variables
+// @import "variables";
+
+// Bootstrap
+@import 'bootstrap/scss/bootstrap';
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+
+@import "login";
+@import "admin";
+
+
+.item-body {
+    gap: 40px;
+    overflow: hidden;
+}
+
+.bottomContent {
+    height: max-content;
+}
+
+.item2,
+.item3,
+.item4 {
+    width: 1140px;
+}
+
+.itemBtn {
+    width: max-content;
+}
+
+.items {
+    width: max-content;
+    margin-left: 40px;
+}
+
+.leftContent {
+    transition: 0.3s ease-in-out; /* Adjust the duration and easing as needed */
+}

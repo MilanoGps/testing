@@ -1,0 +1,67 @@
+.leftContent {
+    display: none;
+    width: 25%;
+    height: 100%;
+
+}
+
+.btnReg,
+.btnBack {
+    height: max-content;
+}
+
+
+.backToogle {
+    transform: scale(0);
+    position: absolute;
+}
+
+.btnTgl1 {
+    position: static;
+    transform: scale(1);
+}
+
+.btnAct{
+    width: 100px;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+
+.content{
+    margin-top: 50px;
+}
+
+.textName{
+    top: 150px;
+    right: 400px;
+    font-size: 3vh;
+}
+
+.nim, .ttlUts{
+    transform: rotate(-30deg) scale(3);
+    text-shadow: 2px 2px 5px #ffde59;
+}
+
+.ttlUts{
+    transform: rotate(30deg) scale(3);
+    text-shadow: 2px 2px 5px #ffde59;
+}
+
+.subTxt{
+    color:#ffde59;    text-shadow: 2px 2px 5px #000000;
+
+}
+
+.sayText{
+    width: max-content;
+    margin: auto;
+    background-color: #ffde59;
+}
+
+.btnHome{
+    background-color: #ffde59;
+}

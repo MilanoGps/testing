@@ -1,0 +1,8 @@
+- name: Copy Dockerfile to Ansible Server
+  hosts: ansible_server
+  become: true
+  tasks:
+    - name: Copy Dockerfile to remote server
+    
+      copy:
+        src: Dockerfile
