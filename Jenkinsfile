@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/dzulfiqar03/tubes_komputasiawan_seeU.git'
+                git branch: 'main', url: 'https://github.com/MilanoGps/testing.git'
             }
         }
         stage('Send Dockerfile to Ansible') {
