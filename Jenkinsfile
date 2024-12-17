@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                git  'https://github.com/Faqs1/Kelompok5_Komputasi.git'
+                git  'https://github.com/MilanoGps/testing.git'
             }
         }
         stage('Test') {
