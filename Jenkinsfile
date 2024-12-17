@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-        DOCKER_USERNAME = credentials('dockerhub-username')
-        DOCKER_PASSWORD = credentials('dockerhub-password')
+        DOCKER_USERNAME = credentials('dockerhub-username') // Pastikan ini ada di Jenkins
+        DOCKER_PASSWORD = credentials('dockerhub-password') // Pastikan ini ada di Jenkins
     }
     stages {
         stage('Checkout') {
@@ -13,7 +13,11 @@ pipeline {
         stage('Send Dockerfile to Ansible') {
             steps {
                 echo 'Executing Ansible Playbook'
-                ansiblePlaybook credentialsId: 'seeU_website', disableHostKeyChecking: true, installation: 'Ansible', inventory: 'ansible-project/playbook/hosts', playbook: 'ansible-project/playbook/copy_dockerfile.yml', vaultTmpPath: ''
+                ansiblePlaybook credentialsId: 'seeU_website', 
+                    disableHostKeyChecking: true, 
+                    installation: 'Ansible', 
+                    inventory: 'ansible-project/playbook/hosts', 
+                    playbook: 'ansible-project/playbook/copy_dockerfile.yml'
             }
         }
         stage('Build Docker Image') {
@@ -38,15 +42,18 @@ pipeline {
         stage('Copy Files to Kubernetes') {
             steps {
                 sshagent(['kubernetes-ssh-key']) {
-                    sh 'scp file1.txt user@kubernetes-server:./'
+                    sh '''
+                    scp file1.txt user@kubernetes-server:./
+                    '''
                 }
             }
         }
         stage('Deploy to Kubernetes') {
             steps {
-                ansiblePlaybook credentialsId: 'seeU_website', playbook: 'ansible-project/deploy.yml'
+                ansiblePlaybook credentialsId: 'seeU_website', 
+                    inventory: 'ansible-project/playbook/hosts',
+                    playbook: 'ansible-project/deploy.yml'
             }
         }
     }
 }
-
