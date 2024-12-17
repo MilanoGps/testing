@@ -1,54 +1,28 @@
 pipeline {
     agent any
     stages {
-        stage('Checkout') {
+        stage('Build') {
             steps {
-                git branch: 'main', url: 'https://github.com/MilanoGps/testing.git'
+                git  'https://github.com/Faqs1/Kelompok5_Komputasi.git'
             }
         }
-        stage('Verify Ansible Files') {
+        stage('Test') {
             steps {
-                sh '''
-                ls -l ansible-project/playbook/hosts
-                ls -l ansible-project/playbook/copy_dockerfile.yml
-                '''
+                sh 'ansible-galaxy install -r requirements.yml'
             }
         }
-        stage('Send Dockerfile to Ansible') {
+        stage('Deploy') {
             steps {
-                echo 'Executing Ansible Playbook'
-                ansiblePlaybook credentialsId: 'seeU_website', 
-                    disableHostKeyChecking: true, 
-                    installation: 'Ansible', 
-                    inventory: 'ansible-project/playbook/hosts', 
-                    playbook: 'ansible-project/playbook/copy_dockerfile.yml'
+                 ansibleplaybook credentialsId: 'b6dc3518-4b6e-4774-a292-d5aeda03de68', inventory: 'hosts', playbook: 'mariadb.yml'
             }
         }
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t seeU_website .'
-            }
+    }
+    post {
+        success {
+            echo 'Deployment successful!'
         }
-        stage('Push Image to Docker Hub') {
-            steps {
-                sh '''
-                echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-                docker push seeU_website
-                '''
-            }
-        }
-        stage('Copy Files to Kubernetes') {
-            steps {
-                sshagent(['kubernetes-ssh-key']) {
-                    sh 'scp file1.txt user@kubernetes-server:./'
-                }
-            }
-        }
-        stage('Deploy to Kubernetes') {
-            steps {
-                ansiblePlaybook credentialsId: 'seeU_website', 
-                    playbook: 'ansible-project/deploy.yml'
-            }
+        failure {
+            echo 'Deployment failed!'
         }
     }
 }
