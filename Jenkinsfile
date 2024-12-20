@@ -8,27 +8,28 @@ pipeline {
         }
         stage('Send Dockerfile to Ansible') {
             steps {
-                echo '....'
+                echo 'Executing Ansible Playbook'
+                ansiblePlaybook credentialsId: 'seeU_website', disableHostKeyChecking: true, installation: 'Ansible', inventory: 'ansible-project/playbook/hosts', playbook: 'ansible-project/playbook/copy_dockerfile.yml', vaultTmpPath: ''
             }
         }
         stage('Build Docker Image') {
             steps {
-                echo '....'
+                sh 'docker build -t seeU_website .'
             }
         }
         stage('Push Image to Docker Hub') {
             steps {
-                echo '....'
+                sh 'docker push seeU_website'
             }
         }
         stage('Copy Files to Kubernetes') {
             steps {
-                echo '....'
+                sh 'scp file1.txt user@kubernetes-server:./'
             }
         }
         stage('Deploy to Kubernetes') {
             steps {
-                echo '...'
+                ansiblePlaybook playbook: 'deploy.yml'
             }
         }
     }
