@@ -3,17 +3,17 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                git  'https://github.com/MilanoGps/testing.git'
+                git 'https://github.com/MilanoGps/testing.git'
             }
         }
         stage('Test') {
             steps {
-                echo "..."
+                echo '...'
             }
         }
         stage('Deploy') {
             steps {
-                echo "..."
+                echo '...'
             }
         }
     }
