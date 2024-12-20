@@ -1,28 +1,36 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                git 'https://github.com/MilanoGps/testing.git'
+                git branch: 'master', url: 'https://github.com/MilanoGps/testing.git/'
             }
         }
-        stage('Test') {
+        stage('Send Dockerfile to Ansible') {
             steps {
-                echo '...'
+                echo 'Executing Ansible Playbook'
+                ansiblePlaybook credentialsId: 'seeU_website', disableHostKeyChecking: true, installation: 'Ansible', inventory: 'ansible-project/playbook/hosts', playbook: 'ansible-project/playbook/copy_dockerfile.yml', vaultTmpPath: ''
             }
         }
-        stage('Deploy') {
+        stage('Build Docker Image') {
             steps {
-                echo '...'
+                sh 'docker build -t seeU_website .'
             }
         }
-    }
-    post {
-        success {
-            echo 'Deployment successful!'
+        stage('Push Image to Docker Hub') {
+            steps {
+                sh 'docker push seeU_website'
+            }
         }
-        failure {
-            echo 'Deployment failed!'
+        stage('Copy Files to Kubernetes') {
+            steps {
+                sh 'scp file1.txt user@kubernetes-server:./'
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                ansiblePlaybook playbook: 'deploy.yml'
+            }
         }
     }
 }
